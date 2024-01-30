@@ -114,13 +114,35 @@ if __name__ == '__main__':  # 构造main函数，表示以下代码块只在运�
     except SerialException:  # 如果出现异常情况
         exit(-2)  # 退出整个程序，并返回值-2
 
-    reat = rospy.Rate(5)  # 创建一个对象rospy.Rate赋值给reat，控制频率为5Hz
-    while not rospy.is_shutdown():  # 创建循环，如果ros节点没有被关闭，则以下代码一直进行循环
-        position1 = lobot.angle_conversion1()
-        position2 = lobot.angle_conversion2()
-        lobot.moveServo(7, position1, 1000)  # 调用lobot对象中的Sports函数，传递实参
+    # reat = rospy.Rate(5)  # 创建一个对象rospy.Rate赋值给reat，控制频率为5Hz
+    # while not rospy.is_shutdown():  # 创建循环，如果ros节点没有被关闭，则以下代码一直进行循环
+    #     position1 = lobot.angle_conversion1()
+    #     position2 = lobot.angle_conversion2()
+    #     lobot.moveServo(7, position1, 1000)  # 调用lobot对象中的Sports函数，传递实参
+    #     lobot.moveServos(1, position2, 1000)
+    #     rospy.spin()  # 处理一次ros消息
+    #     reat.sleep()  # 保持循环频率为5Hz
+
+if __name__ == '__main__':
+    port = "/dev/ttyUSB2" 
+    baud_rate = 9600
+
+    lobot = Steering_gear()
+
+    try:
+        lobot.OpenSerialPot(port, baud_rate)
+    except SerialException:
+        exit(-2)
+
+    while True:
+        position1 = lobot.angle_conversion1(25)  # 平面舵机移动
+        position2 = lobot.angle_conversion2(35)  # 垂直舵机移动
+        lobot.moveServo(7, position1, 1000)
         lobot.moveServos(1, position2, 1000)
-        rospy.spin()  # 处理一次ros消息
-        reat.sleep()  # 保持循环频率为5Hz
+        sleep(0.2)
+        print(position1)
+
+
+
 
 
